@@ -1,0 +1,10 @@
+// Order order1 = [SELECT Id FROM Order WHERE Id = '8015g000000smFQAAY'];
+// System.debug('ff: ' +order1);
+// PriceBook2 prci = [SELECT Id, isStandard FROM PriceBook2 WHERE isStandard = true];
+// order1.Pricebook2Id = prci.Id;
+// update prci;
+// System.debug('LLDK: ' +prci);
+// System.debug('sss: ' +[SELECT Id, Pricebook2Id FROM Order WHERE Id = '8015g000000smFQAAY']);
+List<OrderItem> oi = [select id, orderId from orderItem where orderId =: '8015g000000smFQAAY'];
+System.debug('oi: ' + oi);
+delete oi;

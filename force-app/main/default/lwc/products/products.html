@@ -2,10 +2,12 @@
  - Created by Eugene on 15.06.2021.
  -->
 
-<template>
+<template >
+    <lightning-button slot="actions" label="Add to Order" onclick={updateOrder}></lightning-button> 
     <lightning-datatable
             key-field="Id"
             data={productList.data}
-            columns={columns}>
+            columns={columns}
+            >
     </lightning-datatable>
 </template>

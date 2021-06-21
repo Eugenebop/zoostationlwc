@@ -1,19 +1,40 @@
-import { LightningElement, wire } from 'lwc';
+import {LightningElement, wire, api, track } from 'lwc';
 import getOrderProductList from '@salesforce/apex/OrderProductController.getOrderProductList';
-
+import {refreshApex} from '@salesforce/apex';  
 const columns = [
-    { label: 'First Name', fieldName: 'FirstName' },
-    { label: 'Last Name', fieldName: 'LastName' },
-    { label: 'Title', fieldName: 'Title' },
-    { label: 'Phone', fieldName: 'Phone', type: 'phone' },
-    { label: 'Email', fieldName: 'Email', type: 'email' }
+    { label: 'Name', fieldName:'Name'},
+    { label: 'Unit price', fieldName:'UnitPrice', type: 'currency',typeAttributes : {currencyCode:'USD',step: '0.001'}},
+    { label: 'Quantity', fieldName:'Quantity', type:'number'},
+    { label: 'Total Price', fieldName:'TotalPrice',  type: 'currency',typeAttributes : {currencyCode:'USD',step: '0.001'}}
 ];
-export default class ApexDatatableExample extends LightningElement {
-
-    error;
+export default class OrderItems extends LightningElement {
+    @api refresh;
     columns = columns;
+    wiredOrderItems;
+    orderItem;
+    @api recordId;
+    @wire(getOrderProductList, {orderId: '$recordId'}) wiredOrderItems(value){
+    this.refresh = value;
 
-    @wire(getOrderProductList)
-    OrderItem;
+    if(value.data){
+        let tempRecords = JSON.parse(JSON.stringify(value.data));
+        tempRecords = tempRecords.map(row => {
+            return { UnitPrice : row.UnitPrice, 
+                        Name : row.Product2.Name,
+                        TotalPrice : row.TotalPrice,
+                        Quantity : row.Quantity
+                    };
+        });
+        this.orderItem = tempRecords;
+    }
+    else if ( value.error ) {
+        this.error = error;
+        this.orderItem = undefined;
+    }
+}
+
+redrM(){
+    refreshApex(this.refresh);
+}
 
 }
